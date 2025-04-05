@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  againstai-bot:
+    build: .
+    restart: always
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ./data:/app/data
+      
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python -m unittest discover tests
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    volumes:
+      - ./data:/app/data
+      - ./tests:/app/tests
