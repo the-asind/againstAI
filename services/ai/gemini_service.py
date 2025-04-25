@@ -14,16 +14,16 @@ class GeminiService(BaseAIService):
         super().__init__()
         
         try:
-            # Configure API with key
+            
             genai.configure(api_key=GEMINI_API_KEY)
             
-            # Get list of available models
+            
             available_models = [model.name for model in genai.list_models()]
             self.logger.info(f"Available models: {available_models}")
             
-            # Find a suitable model for text generation
+            
             model_name = None
-            # First look for preferred models
+            
             preferred_models = ["gemini-2.0-flash-lite"]
             for model in preferred_models:
                 if any(model in m for m in available_models):
@@ -34,7 +34,7 @@ class GeminiService(BaseAIService):
                     if model_name:
                         break
             
-            # If preferred models are not found, take any with text support
+            
             if not model_name:
                 for full_name in available_models:
                     model = genai.get_model(full_name)
@@ -50,7 +50,7 @@ class GeminiService(BaseAIService):
             
         except Exception as e:
             self.logger.error(f"Error initializing GeminiService: {e}", exc_info=True)
-            # In case of problems, create a fallback that will return fixed results
+            
             self.model = None
             self.logger.warning("Using fallback mode without API access")
     
@@ -66,7 +66,7 @@ class GeminiService(BaseAIService):
         Returns:
             Tuple[str, List[int]]: Story narrative and list of survived player IDs
         """
-        # Prepare prompt for Gemini based on game mode
+        
         if game_mode == GameMode.BROTHERHOOD:
             prompt = self._build_cooperative_prompt(scenario, players)
         else:
@@ -74,13 +74,13 @@ class GeminiService(BaseAIService):
             
         self.logger.info(f"Prompt created, length: {len(prompt)}")
         
-        # If model is unavailable, use fallback mode
+        
         if not self.model:
             self.logger.warning("API unavailable, using fallback mode")
             return self._generate_fallback_response(scenario, players, game_mode)
         
         try:
-            # Set generation parameters
+            
             generation_config = {
                 "temperature": 0.7,
                 "top_p": 0.95,
@@ -88,18 +88,18 @@ class GeminiService(BaseAIService):
                 "max_output_tokens": 4096,
             }
             
-            # Request to Gemini API
+            
             response = await self.model.generate_content_async(
                 prompt,
                 generation_config=generation_config
             )
             
-            # Check response existence and structure
+            
             if not response:
                 self.logger.error("API returned empty response")
                 return self._generate_fallback_response(scenario, players, game_mode)
             
-            # Get response text - handle possible response object variations
+            
             if hasattr(response, 'text'):
                 response_text = response.text
             elif hasattr(response, 'parts'):
@@ -111,7 +111,7 @@ class GeminiService(BaseAIService):
                         parts.append(str(part))
                 response_text = ''.join(parts)
             else:
-                # If response structure doesn't match expectations
+                
                 response_text = str(response)
             
             self.logger.info(f"Received response from API, length: {len(response_text)}")
@@ -120,6 +120,6 @@ class GeminiService(BaseAIService):
         
         except Exception as e:
             self.logger.error(f"Error accessing Gemini API: {e}", exc_info=True)
-            # Use fallback mode in case of error
+            
             return self._generate_fallback_response(scenario, players, game_mode)
     

@@ -28,7 +28,7 @@ def get_random_scenario() -> str:
         with open(SCENARIOS_FILE, 'r', encoding='utf-8') as file:
             scenarios = file.read().splitlines()
         
-        # Фильтруем пустые строки
+        
         scenarios = [s for s in scenarios if s.strip()]
         
         if not scenarios:

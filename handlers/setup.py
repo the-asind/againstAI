@@ -31,7 +31,7 @@ from handlers.command_handlers import (
 def setup_handlers(application: Application):
     """Настраивает обработчики команд и сообщений"""
     
-    # Основной разговорный обработчик
+    
     conv_handler = ConversationHandler(
         entry_points=[
             CommandHandler("start", start_command),
@@ -56,14 +56,14 @@ def setup_handlers(application: Application):
             ],
         },
         fallbacks=[CommandHandler("start", start_command)],
-        per_chat=True,  # Используем per_chat вместо per_message
-        per_message=False  # Отключаем per_message, так как у вас смешанные обработчики
+        per_chat=True,  
+        per_message=False  
     )
     
-    # Добавляем обработчики в приложение
+    
     application.add_handler(conv_handler)
     
-    # Добавляем отдельные обработчики для команд вне контекста разговора
+    
     application.add_handler(CommandHandler("lobby", lobby_command))
     application.add_handler(CommandHandler("leave", leave_command))
     

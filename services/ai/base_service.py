@@ -149,18 +149,18 @@ class BaseAIService(ABC):
         survivors_names = []
         survived_ids = []
         
-        # For cooperative mode, we either all survive or all die
+        
         if game_mode == GameMode.BROTHERHOOD:
-            # Проверка на согласованность действий игроков
-            # Если в действиях есть противоречивые ключевые слова, команда не выживает
+            
+            
             contradictory_keywords = ["убегаю", "бегу", "покидаю", "оставляю", "эгоистично", "спасаюсь", "убить"]
-            # Слова, указывающие на совместную работу
+            
             cooperative_keywords = ["помогаю", "спасаем", "вместе", "команда", "группа", "объединяемся", "сотрудничаем"]
             
             has_contradictions = False
             has_cooperation = False
             
-            # Проверяем все действия игроков
+            
             for player in players.values():
                 action = player.action.lower()
                 if any(keyword in action for keyword in contradictory_keywords):
@@ -168,7 +168,7 @@ class BaseAIService(ABC):
                 if any(keyword in action for keyword in cooperative_keywords):
                     has_cooperation = True
             
-            # Команда выживает, если нет противоречий или есть явное сотрудничество
+            
             if not has_contradictions or has_cooperation:
                 survived_ids = player_ids
                 for player_id in survived_ids:
@@ -187,7 +187,7 @@ class BaseAIService(ABC):
                 Их стратегия сотрудничества оказалась эффективной в этом сценарии выживания. (AI сервис недоступен)
                 """
             else:
-                # Команда не выжила из-за несогласованных действий
+                
                 narrative = f"""
                 In the scenario "{scenario[:50]}...", команда столкнулась с экстремальными вызовами.
                 
@@ -199,14 +199,14 @@ class BaseAIService(ABC):
                 
                 Их стратегия оказалась неэффективной в этом сценарии выживания, где требовалась полная координация. (AI сервис недоступен)
                 """
-                # Никто не выжил
+                
                 survived_ids = []
         else:
-            # For competitive mode (EVERY_MAN_FOR_HIMSELF)
-            # В тесте ожидается только один выживший игрок
-            # Выбираем только первого игрока как выжившего
+            
+            
+            
             if player_ids:
-                survived_ids.append(player_ids[0])  # Only first player survives
+                survived_ids.append(player_ids[0])  
             
             for player_id in survived_ids:
                 player = players[player_id]

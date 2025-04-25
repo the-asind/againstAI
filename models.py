@@ -47,7 +47,7 @@ class Lobby:
         if player.user_id in self.players:
             return False
         
-        # Если это первый игрок, делаем его капитаном
+        
         if not self.players:
             player.is_captain = True
             self.captain_id = player.user_id
@@ -63,7 +63,7 @@ class Lobby:
         is_captain = self.players[user_id].is_captain
         del self.players[user_id]
         
-        # Если удалили капитана и есть другие игроки, назначаем нового
+        
         if is_captain and self.players:
             new_captain_id = next(iter(self.players))
             self.players[new_captain_id].is_captain = True
@@ -96,9 +96,9 @@ class Lobby:
         return {uid: player for uid, player in self.players.items() if player.action is None}
 
 
-# Хранилище лобби (в памяти)
+
 lobbies: Dict[str, Lobby] = {}
-# Отображение пользователь -> лобби
+
 user_to_lobby: Dict[int, str] = {}
-# Состояние пользователей (ожидание имени, фамилии и т.д.)
+
 user_states: Dict[int, Dict[str, any]] = {}
